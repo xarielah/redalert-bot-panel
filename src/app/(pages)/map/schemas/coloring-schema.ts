@@ -12,4 +12,8 @@ export const coloringSectionSchema = yup.object<TimingFields>().shape({
     .string()
     .typeError(ErrMessages.MUST_BE_STRING)
     .required(ErrMessages.REQUIRED),
+  special: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
 });
