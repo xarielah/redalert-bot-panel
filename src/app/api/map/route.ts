@@ -1,7 +1,9 @@
+import { auth } from "@clerk/nextjs/server";
 import { MapRouteActions } from "./enum";
 import { mapActionsHandler } from "./handler";
 
 export async function POST(req: Request) {
+  await auth.protect();
   try {
     const body = await req.json();
     const action = body.action;
