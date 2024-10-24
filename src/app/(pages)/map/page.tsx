@@ -1,4 +1,4 @@
-import AuthControl from "@/app/(components)/auth-control";
+import AuthControl from "@/components/auth-control";
 import ColoringOptions from "./components/coloring-options";
 import TimingOptions from "./components/timing-options";
 

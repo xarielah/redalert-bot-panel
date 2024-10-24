@@ -1,5 +1,6 @@
 "use client";
 
+import FormField from "@/components/form-field";
 import { useFormik } from "formik";
 import { coloringSectionSchema } from "../schemas/coloring-schema";
 
@@ -17,38 +18,22 @@ export default function ColoringOptions() {
     },
   });
 
-  const { handleSubmit, handleChange, errors, touched, values } = formik;
+  const { handleSubmit } = formik;
 
   return (
     <form className="form-spacing" onSubmit={handleSubmit}>
-      <div>
-        <label className="form-label">
-          Normal polygons color
-          <input
-            name="normal"
-            onChange={handleChange}
-            value={values.normal}
-            className="form-input"
-          />
-        </label>
-        {errors.normal && touched.normal ? (
-          <span className="text-red-500">{errors.normal}</span>
-        ) : null}
-      </div>
-      <div>
-        <label className="form-label">
-          Special polygons color
-          <input
-            name="special"
-            onChange={handleChange}
-            value={values.special}
-            className="form-input"
-          />
-        </label>
-        {errors.special && touched.special ? (
-          <span className="text-red-500">{errors.special}</span>
-        ) : null}
-      </div>
+      <FormField
+        name="normal"
+        formik={formik}
+        label="Normal polygons color"
+        required
+      />
+      <FormField
+        name="special"
+        formik={formik}
+        label="Special polygons color"
+        required
+      />
       <div className="form-submit-wrap">
         <button type="submit" className="button mx-auto`">
           Save Changes

@@ -11,13 +11,41 @@ export const headingSchema = yup.object<HeadingFields>().shape({
   missile: yup
     .string()
     .typeError(ErrMessages.MUST_BE_STRING)
-    .required(ErrMessages.REQUIRED)
-    .min(1, ErrMessages.RANGE)
-    .max(256, ErrMessages.RANGE),
+    .required(ErrMessages.REQUIRED),
+  invasion: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
   drone: yup
     .string()
     .typeError(ErrMessages.MUST_BE_STRING)
-    .required(ErrMessages.REQUIRED)
-    .min(1, ErrMessages.RANGE)
-    .max(256, ErrMessages.RANGE),
+    .required(ErrMessages.REQUIRED),
+  earthquake: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
+  hazardous: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
+  tsunami: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
+  radioactive: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
+  unconvetional: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
+  alert: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
+  drill: yup
+    .string()
+    .typeError(ErrMessages.MUST_BE_STRING)
+    .required(ErrMessages.REQUIRED),
 });

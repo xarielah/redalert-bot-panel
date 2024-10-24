@@ -1,5 +1,6 @@
 "use client";
 
+import FormField from "@/components/form-field";
 import { useFormik } from "formik";
 import { timingSectionSchema } from "../schemas/timing-schema";
 
@@ -17,38 +18,22 @@ export default function TimingOptions() {
     },
   });
 
-  const { handleSubmit, handleChange, errors, touched, values } = formik;
+  const { handleSubmit } = formik;
 
   return (
     <form className="form-spacing" onSubmit={handleSubmit}>
-      <div>
-        <label className="form-label">
-          Generate map after X seconds
-          <input
-            name="generateMapAfter"
-            onChange={handleChange}
-            value={values.generateMapAfter}
-            className="form-input"
-          />
-        </label>
-        {errors.generateMapAfter && touched.generateMapAfter ? (
-          <span className="text-red-500">{errors.generateMapAfter}</span>
-        ) : null}
-      </div>
-      <div>
-        <label className="form-label">
-          Reset "specials" after X seconds
-          <input
-            name="resetSpecialsAfter"
-            onChange={handleChange}
-            value={values.resetSpecialsAfter}
-            className="form-input"
-          />
-        </label>
-        {errors.resetSpecialsAfter && touched.resetSpecialsAfter ? (
-          <span className="text-red-500">{errors.resetSpecialsAfter}</span>
-        ) : null}
-      </div>
+      <FormField
+        formik={formik}
+        name="generateMapAfter"
+        label="Generate map after X seconds"
+        required
+      />
+      <FormField
+        formik={formik}
+        name="resetSpecialsAfter"
+        label={`Reset "specials" after X seconds`}
+        required
+      />
       <div className="form-submit-wrap">
         <button type="submit" className="button mx-auto`">
           Save Changes

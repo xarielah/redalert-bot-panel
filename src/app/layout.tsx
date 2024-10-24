@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { PT_Serif as Font } from "next/font/google";
-import NavigationBar from "./(components)/navigation-bar";
+import NavigationBar from "../components/navigation-bar";
 import "./globals.css";
 
 const font = Font({ weight: ["400"], subsets: ["latin"] });

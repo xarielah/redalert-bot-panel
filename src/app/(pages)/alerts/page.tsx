@@ -1,4 +1,4 @@
-import AuthControl from "@/app/(components)/auth-control";
+import AuthControl from "@/components/auth-control";
 import HeadingOptions from "./components/headings-options";
 
 export default function AlertsPage() {
@@ -8,7 +8,7 @@ export default function AlertsPage() {
         <h1 className="page-title">Alerts Settings</h1>
         <hr />
         <section className="page-section-spacing">
-          <h2 className="page-section-title">Headings</h2>
+          <h2 className="page-section-title">Alert Headings</h2>
           <HeadingOptions />
         </section>
       </section>

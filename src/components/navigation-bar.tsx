@@ -1,4 +1,4 @@
-import Logo from "@/app/(components)/il.png";
+import Logo from "@/components/il.png";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";

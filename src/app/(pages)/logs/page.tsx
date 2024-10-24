@@ -1,4 +1,4 @@
-import AuthControl from "@/app/(components)/auth-control";
+import AuthControl from "@/components/auth-control";
 
 export default function LogsPage() {
   return (
