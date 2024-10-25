@@ -1,4 +1,4 @@
-import { MapTimingsTypes } from "@/models/MapTimings";
+import { MapTimingsTypes } from "@/models/map-timing-types";
 import { MapRouteActions } from "../enum";
 import { getTimings, updateTimings } from "../map-repository";
 
@@ -15,16 +15,13 @@ export async function handlerUpdateTimings(payload: IUpdateTimingsPayload) {
     const resetSpecialCache = payload?.[MapTimingsTypes.RESET_SPECIAL_CACHE];
 
     if (!mapGeneration && !resetSpecialCache) {
-      return Response.json(
-        { message: "Invalid timing type." },
-        { status: 400 }
-      );
+      return Response.json({ error: "Invalid timing type." }, { status: 400 });
     }
 
     if (mapGeneration) {
-      if (typeof mapGeneration !== "number") {
+      if (!mapGeneration.toString().match(/^\d+$/)) {
         return Response.json(
-          { message: "Map generation timing must be a number." },
+          { error: "Map generation timing must be a number." },
           { status: 400 }
         );
       }
@@ -36,9 +33,9 @@ export async function handlerUpdateTimings(payload: IUpdateTimingsPayload) {
     }
 
     if (resetSpecialCache) {
-      if (typeof resetSpecialCache !== "number") {
+      if (!resetSpecialCache.toString().match(/^\d+$/)) {
         return Response.json(
-          { message: "Reset special cache timing must be a number." },
+          { error: "Reset special cache timing must be a number." },
           { status: 400 }
         );
       }
@@ -64,7 +61,7 @@ export async function handlerUpdateTimings(payload: IUpdateTimingsPayload) {
 export async function handlerGetTimings() {
   const result = await getTimings();
   return Response.json({
-    results: result,
+    result: result.map((r) => ({ type: r.type, value: r.value })),
     action: MapRouteActions.GET_TIMINGS,
   });
 }

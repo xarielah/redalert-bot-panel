@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
-
-export enum MapColorTypes {
-  NORMAL = "normal",
-  SPECIAL = "special",
-}
+import { MapColorTypes } from "./map-color-types";
 
 export interface MapColorsDocument extends mongoose.Document {
   type: MapColorTypes;
@@ -26,5 +22,5 @@ const MapColorsSchema = new mongoose.Schema<MapColorsDocument>(
   { timestamps: true }
 );
 
-export default mongoose.models.MapColors ||
+export default mongoose.models.MapColor ||
   mongoose.model("MapColor", MapColorsSchema);

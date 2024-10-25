@@ -1,7 +1,14 @@
 "use client";
 
+import { AlertRouteActions } from "@/app/api/alert/enum";
+import ComponentLoading from "@/components/component-loading";
 import FormField from "@/components/form-field";
+import { AlertHeadingTypes } from "@/models/alert-headings-types";
+import { AlertHeadingDocument } from "@/models/AlertHeadings";
 import { useFormik } from "formik";
+import { useEffect } from "react";
+import useSWR from "swr";
+import useSWRMutation from "swr/mutation";
 import { headingSchema } from "../schemas/heading-schema";
 
 export interface HeadingFields {
@@ -12,12 +19,43 @@ export interface HeadingFields {
   earthquake: string;
   tsunami: string;
   radioactive: string;
-  unconvetional: string;
-  alert: string;
+  unconventional: string;
+  general: string;
   drill: string;
 }
 
+const fetcher = (url: string) =>
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
+      action: AlertRouteActions.GET_HEADINGS,
+    }),
+  }).then((res) => res.json());
+
+const updateHeadings = (
+  url: string,
+  { arg: payload }: { arg: HeadingFields }
+) => {
+  return fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
+      action: AlertRouteActions.UPDATE_HEADINGS,
+      payload: payload,
+    }),
+  }).then((res) => res.json());
+};
+
 export default function HeadingOptions() {
+  const { data, isLoading, error } = useSWR(
+    AlertRouteActions.GET_HEADINGS,
+    () => fetcher("/api/alert")
+  );
+
+  const { trigger: sendUpdateHeadings, isMutating } = useSWRMutation(
+    "/api/alert",
+    updateHeadings
+  );
+
   const formik = useFormik<HeadingFields>({
     validationSchema: headingSchema,
     initialValues: {
@@ -28,23 +66,37 @@ export default function HeadingOptions() {
       earthquake: "",
       tsunami: "",
       radioactive: "",
-      unconvetional: "",
-      alert: "",
+      unconventional: "",
+      general: "",
       drill: "",
     },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await sendUpdateHeadings(values);
     },
   });
 
-  const { handleSubmit } = formik;
+  useEffect(() => {
+    const result = data?.result as AlertHeadingDocument[];
+    if (result && Array.isArray(result)) {
+      const validTypes = Object.values(AlertHeadingTypes);
+      const serverValues = result.reduce<any>((acc, heading) => {
+        if (!validTypes.includes(heading.type as AlertHeadingTypes)) return acc;
+        acc[heading.type] = heading.heading;
+        return acc;
+      }, {});
+      setValues((prev) => ({ ...prev, ...serverValues } as HeadingFields));
+    }
+  }, [data, isLoading]);
 
+  const { handleSubmit, setValues } = formik;
+
+  if (isLoading || isMutating) return <ComponentLoading />;
   return (
     <form className="form-spacing" onSubmit={handleSubmit}>
       <FormField
         name="missile"
         formik={formik}
-        label={"Missle alert"}
+        label={"Missile alert"}
         required
       />
       <FormField
@@ -84,13 +136,13 @@ export default function HeadingOptions() {
         required
       />
       <FormField
-        name="unconvetional"
+        name="unconventional"
         formik={formik}
-        label={"Unconvetional explosives alert"}
+        label={"Unconventional explosives alert"}
         required
       />
       <FormField
-        name="alert"
+        name="general"
         formik={formik}
         label={"Generic alert"}
         required

@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-menu > a {
-  @apply text-sm rounded-lg shadow-sm px-4 py-1 w-24 text-center hover:bg-cyan-500 ease-in-out duration-300 hover:text-white;
+[data-nav-active="false"] {
+  @apply text-sm rounded-lg hover:shadow-lg px-4 py-1 w-24 text-center hover:bg-cyan-500 ease-in-out duration-300 hover:text-white;
+}
+
+[data-nav-active="true"] {
+  @apply text-sm rounded-lg hover:shadow-lg px-4 py-1 w-24 text-center bg-cyan-500 ease-in-out duration-300 text-white;
 }
 
 .button {
-  @apply text-sm rounded-lg shadow-sm px-4 py-1 text-center bg-cyan-500 hover:bg-cyan-600 hover:-translate-y-1 whitespace-nowrap ease-in-out duration-300 text-white;
+  @apply text-lg rounded-lg shadow-sm px-4 py-1 text-center bg-cyan-500 hover:bg-cyan-600 hover:-translate-y-1 whitespace-nowrap ease-in-out duration-300 text-white;
 }
 
 .form-spacing {

@@ -1,6 +1,8 @@
 import dbConnect from "@/database/db-connect";
-import MapColor, { MapColorTypes } from "@/models/MapColors";
-import MapTimings, { MapTimingsTypes } from "@/models/MapTimings";
+import { MapColorTypes } from "@/models/map-color-types";
+import { MapTimingsTypes } from "@/models/map-timing-types";
+import MapColor from "@/models/MapColors";
+import MapTimings from "@/models/MapTimings";
 
 export async function getColors() {
   await dbConnect();

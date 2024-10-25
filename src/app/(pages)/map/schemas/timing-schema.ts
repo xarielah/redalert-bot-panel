@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import { type TimingFields } from "../components/timing-options";
 
 enum ErrMessages {
   RANGE = "Value must be between 1 and 1000",
@@ -7,16 +6,16 @@ enum ErrMessages {
   MUST_BE_NUMBER = "This field must be a number",
 }
 
-export const timingSectionSchema = yup.object<TimingFields>().shape({
-  generateMapAfter: yup
-    .number()
-    .typeError(ErrMessages.MUST_BE_NUMBER)
+export const timingSectionSchema = yup.object().shape({
+  map_generation: yup
+    .string()
+    .matches(/^\d+$/, "Must be a number")
     .required(ErrMessages.REQUIRED)
     .min(1, ErrMessages.RANGE)
     .max(1000, ErrMessages.RANGE),
-  resetSpecialsAfter: yup
-    .number()
-    .typeError(ErrMessages.MUST_BE_NUMBER)
+  reset_special_cache: yup
+    .string()
+    .matches(/^\d+$/, "Must be a number")
     .required(ErrMessages.REQUIRED)
     .min(1, ErrMessages.RANGE)
     .max(1000, ErrMessages.RANGE),

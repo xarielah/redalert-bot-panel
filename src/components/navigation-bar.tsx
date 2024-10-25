@@ -2,25 +2,7 @@ import Logo from "@/components/il.png";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-type MenuItem = {
-  label: string;
-  href: string;
-};
-
-const menuItems: MenuItem[] = [
-  {
-    label: "Alerts",
-    href: "/alerts",
-  },
-  {
-    label: "Map",
-    href: "/map",
-  },
-  {
-    label: "Logs",
-    href: "/logs",
-  },
-];
+import NavMenu from "./nav-menu";
 
 export default function NavigationBar() {
   return (
@@ -30,13 +12,7 @@ export default function NavigationBar() {
           <Image src={Logo.src} width={50} height={50} alt="logo" />
         </Link>
         <SignedIn>
-          <menu className="flex items-center space-x-12">
-            {menuItems.map((item) => (
-              <Link href={item.href} key={item.label}>
-                <li>{item.label}</li>
-              </Link>
-            ))}
-          </menu>
+          <NavMenu />
         </SignedIn>
       </div>
       <div>

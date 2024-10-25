@@ -36,11 +36,11 @@ export const headingSchema = yup.object<HeadingFields>().shape({
     .string()
     .typeError(ErrMessages.MUST_BE_STRING)
     .required(ErrMessages.REQUIRED),
-  unconvetional: yup
+  unconventional: yup
     .string()
     .typeError(ErrMessages.MUST_BE_STRING)
     .required(ErrMessages.REQUIRED),
-  alert: yup
+  general: yup
     .string()
     .typeError(ErrMessages.MUST_BE_STRING)
     .required(ErrMessages.REQUIRED),
