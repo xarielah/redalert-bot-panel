@@ -1,4 +1,3 @@
-import Logo from "@/components/il.png";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +8,12 @@ export default function NavigationBar() {
     <nav className="p-4 bg-gray-50 flex items-center justify-between">
       <div className="flex items-center gap-12">
         <Link href="/">
-          <Image src={Logo.src} width={50} height={50} alt="logo" />
+          <Image
+            src={"https://i.ibb.co/G99dgkP/5000-x-5000-px-2.png"}
+            width={50}
+            height={50}
+            alt="logo"
+          />
         </Link>
         <SignedIn>
           <NavMenu />

@@ -7,6 +7,7 @@ export default function AlertsPage() {
       <section className="page-spacing">
         <h1 className="page-title">Alerts Settings</h1>
         <hr />
+        <textarea />
         <section className="page-section-spacing">
           <h2 className="page-section-title">Alert Headings</h2>
           <HeadingOptions />
