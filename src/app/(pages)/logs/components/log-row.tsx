@@ -65,7 +65,7 @@ export default function LogRow({ log }: ILogRow) {
   return (
     <div
       key={log.id}
-      className="group relative cursor-pointer rounded-md p-2 hover:bg-zinc-900"
+      className="group relative cursor-pointer rounded-md p-2 hover:bg-zinc-900 whitespace-pre-wrap"
       onClick={handleCopyMessage}
     >
       <menu className="absolute right-2 -top-3 z-10 hidden items-center gap-2 group-hover:flex">
