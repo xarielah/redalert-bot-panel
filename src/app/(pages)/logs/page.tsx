@@ -16,7 +16,6 @@ enum FilterTypes {
 export default function LogsPage() {
   const { logs, isPolling, isFirstLoad } = useLogPolling();
   const [filter, setFilter] = useState<string>(FilterTypes.TODAY);
-  console.log("🚀 ~ LogsPage ~ logs:", logs);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setFilter(e.target.value);

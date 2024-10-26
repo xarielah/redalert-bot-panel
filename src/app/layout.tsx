@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { Lato as Font } from "next/font/google";
+import { Toaster } from "sonner";
 import NavigationBar from "../components/navigation-bar";
 import "./globals.css";
 
@@ -17,7 +18,10 @@ export default function RootLayout({
           <header>
             <NavigationBar />
           </header>
-          <main className="max-w-7xl py-12 mx-auto px-4">{children}</main>
+          <main className="max-w-7xl py-12 mx-auto px-4">
+            <Toaster expand visibleToasts={3} />
+            {children}
+          </main>
         </body>
       </html>
     </ClerkProvider>

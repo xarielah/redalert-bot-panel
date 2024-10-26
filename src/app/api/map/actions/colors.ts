@@ -1,7 +1,16 @@
 import { MapColorTypes } from "@/models/map-color-types";
+import { MapColorsDocument } from "@/models/MapColors";
 import isHEX from "@/utils/is-hex";
 import { MapRouteActions } from "../enum";
 import { getColors, updateColors } from "../map-repository";
+
+export function colorsDto(result: MapColorsDocument[]) {
+  if (!Array.isArray(result) || !result || result.length === 0) return [];
+  return result.map((r) => ({
+    type: r.type,
+    color: r.color,
+  }));
+}
 
 interface IUpdateColorPayload {
   normal: string;
@@ -42,10 +51,7 @@ export async function handlerUpdateColors(payload: IUpdateColorPayload) {
     }
 
     return Response.json({
-      result: result.map((r) => ({
-        type: r.type,
-        color: r.color,
-      })),
+      result: colorsDto(result),
       action: MapRouteActions.UPDATE_COLORS,
     });
   } catch (error) {
@@ -56,7 +62,7 @@ export async function handlerUpdateColors(payload: IUpdateColorPayload) {
 export async function handlerGetColors() {
   const result = await getColors();
   return Response.json({
-    result: result.map((r) => ({ type: r.type, color: r.color })),
+    result: colorsDto(result),
     action: MapRouteActions.GET_COLORS,
   });
 }

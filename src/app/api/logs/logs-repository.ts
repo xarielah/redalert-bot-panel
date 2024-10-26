@@ -7,11 +7,11 @@ export async function createNewLog(payload: any) {
 }
 
 export async function getAllLogs() {
-  await dbConnect();
-  return Log.find({});
+  const time = new Date().getTime() - 24 * 60 * 60 * 1000;
+  return getDeltaLogs(time);
 }
 
 export async function getDeltaLogs(delta: number) {
   await dbConnect();
-  return Log.find({ time: { $gt: delta - 1000 * 60 * 60 } });
+  return Log.find({ time: { $gt: delta } });
 }

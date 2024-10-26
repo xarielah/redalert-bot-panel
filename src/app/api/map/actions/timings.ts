@@ -1,6 +1,15 @@
 import { MapTimingsTypes } from "@/models/map-timing-types";
+import { MapTimingsDocument } from "@/models/MapTimings";
 import { MapRouteActions } from "../enum";
 import { getTimings, updateTimings } from "../map-repository";
+
+export function timingsDto(result: MapTimingsDocument[]) {
+  if (!Array.isArray(result) || !result || result.length === 0) return [];
+  return result.map((r) => ({
+    type: r.type,
+    value: r.value,
+  }));
+}
 
 interface IUpdateTimingsPayload {
   [MapTimingsTypes.MAP_GENERATION]: number;
@@ -47,10 +56,7 @@ export async function handlerUpdateTimings(payload: IUpdateTimingsPayload) {
     }
 
     return Response.json({
-      result: result.map((r) => ({
-        type: r.type,
-        value: r.value,
-      })),
+      result: timingsDto(result),
       action: MapRouteActions.UPDATE_TIMINGS,
     });
   } catch (error) {
@@ -61,7 +67,7 @@ export async function handlerUpdateTimings(payload: IUpdateTimingsPayload) {
 export async function handlerGetTimings() {
   const result = await getTimings();
   return Response.json({
-    result: result.map((r) => ({ type: r.type, value: r.value })),
+    result: timingsDto(result),
     action: MapRouteActions.GET_TIMINGS,
   });
 }

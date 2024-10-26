@@ -1,4 +1,5 @@
 import { AlertHeadingTypes } from "@/models/alert-headings-types";
+import { AlertHeadingDocument } from "@/models/AlertHeadings";
 import { getAllHeadings, updateHeadings } from "../alert-repository";
 import { AlertRouteActions } from "../enum";
 
@@ -13,6 +14,14 @@ interface IUpdateHeadingsPayload {
   [AlertHeadingTypes.RADIOACTIVE_ALERT]?: string;
   [AlertHeadingTypes.TSUNAMI_ALERT]?: string;
   [AlertHeadingTypes.UNCONVENTIONAL_ALERT]?: string;
+}
+
+export function headingsDto(result: AlertHeadingDocument[]) {
+  if (!Array.isArray(result) || !result || result.length === 0) return [];
+  return result.map((r) => ({
+    type: r.type,
+    heading: r.heading,
+  }));
 }
 
 export async function handlerUpdateHeadings(payload: IUpdateHeadingsPayload) {
@@ -44,10 +53,7 @@ export async function handlerUpdateHeadings(payload: IUpdateHeadingsPayload) {
   }
 
   return Response.json({
-    result: result.map((r) => ({
-      type: r.type,
-      heading: r.heading,
-    })),
+    result: headingsDto(result),
     action: AlertRouteActions.UPDATE_HEADINGS,
   });
 }
@@ -55,7 +61,7 @@ export async function handlerUpdateHeadings(payload: IUpdateHeadingsPayload) {
 export async function handlerGetHeadings() {
   const result = await getAllHeadings();
   return Response.json({
-    result: result.map((r) => ({ type: r.type, heading: r.heading })),
+    result: headingsDto(result),
     action: AlertRouteActions.GET_HEADINGS,
   });
 }

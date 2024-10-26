@@ -14,6 +14,10 @@
   @apply text-lg rounded-lg shadow-sm px-4 py-1 text-center bg-cyan-500 hover:bg-cyan-600 active:-translate-y-1 whitespace-nowrap ease-in-out duration-300 text-white;
 }
 
+button[data-copied="true"] {
+  @apply bg-green-500 hover:bg-green-400/90;
+}
+
 .form-spacing {
   @apply space-y-6;
 }

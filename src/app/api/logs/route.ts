@@ -23,6 +23,7 @@ export async function GET(req: Request) {
         result: resultDto(result),
       });
     }
+    // All logs from the past 24 hours
     const result = await getAllLogs();
     return Response.json({
       result: resultDto(result),
