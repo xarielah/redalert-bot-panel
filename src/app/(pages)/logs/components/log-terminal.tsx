@@ -76,7 +76,7 @@ export default function LogTerminal({ logs }: ILogTerminal) {
       <div
         ref={terminal}
         onScroll={handleScroll}
-        className="overflow-y-scroll h-[700px] bg-zinc-950 text-gray-100 p-4"
+        className="overflow-y-scroll h-[700px] bg-zinc-950 text-gray-100 p-4 rounded-xl shadow-lg"
       >
         {logs.map((log) => (
           <LogRow key={log.id} log={log} />
