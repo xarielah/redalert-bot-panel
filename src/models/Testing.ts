@@ -7,6 +7,7 @@ export interface TestingDocument extends mongoose.Document {
   notificationId: string;
   isDrill: boolean;
   time: number;
+  updatedAt: string;
   touched: boolean;
 }
 

@@ -3,12 +3,25 @@ import Testing, { TestingDocument } from "@/models/Testing";
 
 export async function getPendingTestings() {
   await dbConnect();
-  return Testing.find({ touched: false });
+  return Testing.find({ touched: false }).sort({ createdAt: -1 });
 }
 
-export async function getTestingById(id: string) {
+export async function deleteTestById(id: string) {
+  await dbConnect();
+  return Testing.findByIdAndDelete(id);
+}
+
+export async function getTestingById(
+  id: string
+): Promise<TestingDocument | null> {
   await dbConnect();
   return Testing.findById(id);
+}
+
+// This one expects a NOTIFICATION ID value, not a MONGODB OBJECTID
+export async function processTestAlert(id: string) {
+  await dbConnect();
+  return Testing.findOneAndUpdate({ notificationId: id }, { touched: true });
 }
 
 export async function touchTestAlert(id: string) {
@@ -16,9 +29,10 @@ export async function touchTestAlert(id: string) {
   return Testing.findByIdAndUpdate(id, { touched: true });
 }
 
+// All successful ones
 export async function getLastTestings() {
   await dbConnect();
-  return Testing.find({}).sort({ createdAt: -1 }).limit(5);
+  return Testing.find({ touched: true }).sort({ createdAt: -1 }).limit(5);
 }
 
 export async function createNewTestAlert(

@@ -1,16 +1,18 @@
 import { TestingDocument } from "@/models/Testing";
 import { auth } from "@clerk/nextjs/server";
+import { testingDto } from "./testing-dto";
 import {
   createNewTestAlert,
   getPendingTestings,
   touchTestAlert,
 } from "./testings-repository";
+import { emitTestAlert } from "./testings-service";
 
 function cleanUpAlerts(alerts: TestingDocument[]) {
   console.log(new Date().toISOString() + " - cleaning up alerts");
   setTimeout(() => {
     alerts.forEach((alert) => {
-      touchTestAlert(alert._id + "");
+      touchTestAlert(alert.id);
     });
     console.log(new Date().toISOString() + " - DONE!! cleaning up alerts");
   }, 2000);
@@ -52,22 +54,16 @@ export async function POST(req: Request) {
     };
 
     const testResult = await createNewTestAlert(newTestDto);
+
+    // Emit
+    await emitTestAlert(testResult);
+
     return Response.json({
       result: testingDto(testResult),
       message: "New test alert created",
     });
   } catch (error: any) {
+    console.log("🚀 ~ POST ~ error:", error);
     return Response.json({ error: "Couldn't create new test alert" });
   }
-}
-
-function testingDto(test: TestingDocument) {
-  return {
-    id: test._id,
-    cities: test.cities,
-    isDrill: test.isDrill,
-    threat: test.threat,
-    notificationId: test.notificationId,
-    time: test.time,
-  };
 }

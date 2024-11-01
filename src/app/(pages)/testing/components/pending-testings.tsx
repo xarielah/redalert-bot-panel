@@ -3,27 +3,32 @@
 import ComponentLoading from "@/components/component-loading";
 import usePolling from "@/hooks/use-polling";
 import { TestingDocument } from "@/models/Testing";
+import { useEffect, useState } from "react";
 import NoData from "./nodata-row";
 import TestingRow from "./testing-row";
 
-interface LastTestingsResult {
+interface PendingTestingsResult {
   result: TestingDocument[];
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-export default function LastTestings() {
-  const { data, isLoading } = usePolling<LastTestingsResult>({
-    url: "/api/testing/last-testings",
+export default function PendingTestings() {
+  const [alerts, setAlerts] = useState<TestingDocument[]>([]);
+  const { data, isLoading } = usePolling<PendingTestingsResult>({
+    url: "/api/testing/pending",
     interval: 3 * 1000,
   });
 
+  useEffect(() => {
+    if (data) {
+      setAlerts(data.result);
+    }
+  }, [data]);
+
   if (isLoading) return <ComponentLoading />;
   if (!data || !data.result || data.result.length === 0) return <NoData />;
-  let { result: alerts } = data;
 
   const deleteOne = (id: string) => {
-    alerts = alerts.filter((alert) => alert.id !== id);
+    setAlerts((alerts) => alerts.filter((alert) => alert.id !== id));
   };
 
   return (

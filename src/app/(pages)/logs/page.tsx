@@ -1,6 +1,6 @@
 "use client";
 
-import { useLogPolling } from "@/app/api/logs/use-log-polling";
+import { useLogPolling } from "@/app/(pages)/logs/use-log-polling";
 import AuthControl from "@/components/auth-control";
 import ComponentLoading from "@/components/component-loading";
 import { useState } from "react";

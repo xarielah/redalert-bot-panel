@@ -48,12 +48,21 @@ export default function NewTestOption() {
 
   return (
     <form className="form-spacing" onSubmit={handleSubmit}>
-      <FormField
-        formik={formik}
-        name="cities"
-        label="Comma separated cities"
-        required
-      />
+      <div className="flex justify-between">
+        <label htmlFor="cities">
+          Comma separated cities <span className="text-red-400">*</span>
+        </label>
+        <textarea
+          id="cities"
+          className="form-input rtl text-right"
+          dir="rtl"
+          onChange={formik.handleChange}
+          name="cities"
+          rows={3}
+          placeholder="עפולה, כרמיאל, קריית ביאליק וכו'..."
+          required
+        />
+      </div>
       <FormField
         formik={formik}
         name="threat"
@@ -61,12 +70,13 @@ export default function NewTestOption() {
         required
       />
       <div className="flex items-center justify-between">
-        <label>Is this a drill?</label>
+        <label htmlFor="isDrill">Is this a drill?</label>
         <select
           className="form-input"
           defaultValue="false"
           disabled={false}
           name="isDrill"
+          id="isDrill"
           onChange={formik.handleChange}
         >
           <option value="false">No</option>
