@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { isValidObjectId } from "mongoose";
-import { tokenDto } from "../route";
+import { tokenDto } from "../token-dto";
 import { getTokenById } from "../token-repository";
 
 interface GetTokenParams {

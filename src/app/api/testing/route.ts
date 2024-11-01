@@ -8,7 +8,6 @@ import {
 
 function cleanUpAlerts(alerts: TestingDocument[]) {
   console.log(new Date().toISOString() + " - cleaning up alerts");
-  console.log(new Date().toISOString() + " - cleaning up alerts");
   setTimeout(() => {
     alerts.forEach((alert) => {
       touchTestAlert(alert._id + "");

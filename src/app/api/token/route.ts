@@ -1,5 +1,6 @@
 import { TokenDocument } from "@/models/Token";
 import { auth } from "@clerk/nextjs/server";
+import { tokenDto } from "./token-dto";
 import {
   createNewToken,
   getAllSystemTokens,
@@ -76,15 +77,4 @@ async function handleTokenCreation(body: any) {
 
 function tokenResultDto(tokens: TokenDocument[]) {
   return tokens.map((t) => tokenDto(t));
-}
-
-export function tokenDto(result: TokenDocument) {
-  return {
-    id: result._id,
-    tokenName: result.tokenName,
-    token: result.token,
-    expiry: result.expiry,
-    ownerEmail: result.ownerEmail || undefined,
-    createdAt: result.createdAt,
-  };
 }
