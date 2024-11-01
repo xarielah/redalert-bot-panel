@@ -27,7 +27,12 @@ button[data-copied="true"] {
 }
 
 .form-input {
-  @apply py-1 px-8 shadow-md rounded-md border-[1px];
+  @apply py-1 px-8 shadow-md rounded-md min-w-[35ch] border-[1px] read-only:cursor-not-allowed read-only:text-gray-500;
+  transition: width 0.1s ease-out;
+}
+
+.danger {
+  @apply bg-red-500 hover:bg-red-500/90;
 }
 
 .form-submit-wrap {

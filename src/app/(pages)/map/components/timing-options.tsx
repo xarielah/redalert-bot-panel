@@ -50,7 +50,6 @@ export default function TimingOptions() {
     validationSchema: timingSectionSchema,
     initialValues: { map_generation: 0, reset_special_cache: 0 },
     onSubmit: async (values) => {
-      console.log(values);
       await sendUpdateTimings(values);
     },
   });
@@ -69,7 +68,6 @@ export default function TimingOptions() {
   }, [data, isLoading]);
 
   const { handleSubmit, setValues } = formik;
-  console.log(formik.errors);
 
   if (isLoading || isMutating) return <ComponentLoading />;
   return (

@@ -20,6 +20,14 @@ const menuItems: MenuItem[] = [
     label: "Logs",
     href: "/logs",
   },
+  {
+    label: "API Tokens",
+    href: "/tokens",
+  },
+  {
+    label: "Testing",
+    href: "/testing",
+  },
 ];
 
 export default function NavMenu() {
@@ -29,7 +37,12 @@ export default function NavMenu() {
     <menu className="flex items-center space-x-12">
       {menuItems.map((item) => (
         <Link href={item.href} key={item.label}>
-          <li data-nav-active={path === item.href}>{item.label}</li>
+          <li
+            data-nav-active={path === item.href}
+            className="whitespace-nowrap"
+          >
+            {item.label}
+          </li>
         </Link>
       ))}
     </menu>
