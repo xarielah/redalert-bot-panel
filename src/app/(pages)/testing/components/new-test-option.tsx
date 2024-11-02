@@ -2,7 +2,18 @@
 
 import ComponentLoading from "@/components/component-loading";
 import FormField from "@/components/form-field";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { TestingDocument } from "@/models/Testing";
+import {} from "@radix-ui/react-select";
 import { useFormik } from "formik";
 import useSWRMutation from "swr/mutation";
 
@@ -38,7 +49,6 @@ export default function NewTestOption() {
         threat: parseInt(values.threat.toString()),
       };
       const result = await createNewTest(newTestingPayload);
-      console.log("🚀 ~ onSubmit: ~ result:", result);
     },
   });
 
@@ -48,11 +58,11 @@ export default function NewTestOption() {
 
   return (
     <form className="form-spacing" onSubmit={handleSubmit}>
-      <div className="flex justify-between">
+      <div className="space-y-2">
         <label htmlFor="cities">
           Comma separated cities <span className="text-red-400">*</span>
         </label>
-        <textarea
+        <Textarea
           id="cities"
           className="form-input rtl text-right"
           dir="rtl"
@@ -69,24 +79,26 @@ export default function NewTestOption() {
         label={`Threat classification`}
         required
       />
-      <div className="flex items-center justify-between">
+      <div className="space-y-2">
         <label htmlFor="isDrill">Is this a drill?</label>
-        <select
-          className="form-input"
+        <Select
           defaultValue="false"
-          disabled={false}
           name="isDrill"
-          id="isDrill"
-          onChange={formik.handleChange}
+          onValueChange={formik.handleChange}
         >
-          <option value="false">No</option>
-          <option value="true">Yes</option>
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="-- None --" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="true">Yes</SelectItem>
+              <SelectItem value="false">No</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <div className="form-submit-wrap">
-        <button type="submit" className="button mx-auto`">
-          Submit Test
-        </button>
+        <Button type="submit">Send Test</Button>
       </div>
     </form>
   );

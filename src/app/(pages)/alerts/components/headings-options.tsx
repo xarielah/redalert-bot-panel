@@ -3,10 +3,12 @@
 import { AlertRouteActions } from "@/app/api/alert/enum";
 import ComponentLoading from "@/components/component-loading";
 import FormField from "@/components/form-field";
+import { Button } from "@/components/ui/button";
 import { AlertHeadingTypes } from "@/models/alert-headings-types";
 import { AlertHeadingDocument } from "@/models/AlertHeadings";
 import { useFormik } from "formik";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 import { headingSchema } from "../schemas/heading-schema";
@@ -71,7 +73,9 @@ export default function HeadingOptions() {
       drill: "",
     },
     onSubmit: async (values) => {
-      await sendUpdateHeadings(values);
+      await sendUpdateHeadings(values).then(() =>
+        toast.success("Headings updated successfully!")
+      );
     },
   });
 
@@ -154,9 +158,7 @@ export default function HeadingOptions() {
         required
       />
       <div className="form-submit-wrap">
-        <button type="submit" className="button mx-auto`">
-          Save Changes
-        </button>
+        <Button type="submit">Save Changes</Button>
       </div>
     </form>
   );

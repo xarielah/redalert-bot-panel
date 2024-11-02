@@ -1,4 +1,6 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { LogDocument } from "@/models/Log";
 import { useEffect, useRef, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -73,21 +75,22 @@ export default function LogTerminal({ logs }: ILogTerminal) {
 
   return (
     <div className="relative">
-      <div
+      <ScrollArea
         ref={terminal}
-        onScroll={handleScroll}
-        className="overflow-y-scroll h-[700px] bg-zinc-950 text-gray-100 p-4 rounded-xl shadow-lg"
+        className="h-[700px] bg-zinc-950 text-gray-100 p-4 rounded-xl shadow-lg"
       >
-        {logs.map((log) => (
-          <LogRow key={log.id} log={log} />
-        ))}
-      </div>
+        <div onScroll={handleScroll}>
+          {logs.map((log) => (
+            <LogRow key={log.id} log={log} />
+          ))}
+        </div>
+      </ScrollArea>
 
       <div
         className="absolute bottom-4 right-8 transition-opacity duration-300 ease-in-out z-[100]"
         style={{ opacity: buttonOpacity }}
       >
-        <button
+        <Button
           onClick={scrollToBottom}
           className={`${
             buttonOpacity === 0 ? "hidden" : "flex"
@@ -100,7 +103,7 @@ export default function LogTerminal({ logs }: ILogTerminal) {
         >
           <FaChevronDown />
           <span>{areNewLogs ? "New Logs" : "Scroll Down"}</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

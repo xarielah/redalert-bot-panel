@@ -2,6 +2,8 @@
 
 import ComponentLoading from "@/components/component-loading";
 import FormField from "@/components/form-field";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useFormik } from "formik";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
@@ -68,18 +70,18 @@ export default function MainTokenContent({ tokenId }: IMainTokenContent) {
         label={"Token Name"}
         required
       />
-      <div className="flex justify-between items-center">
+      <div className="space-y-2">
         <label>Expiry</label>
-        <input
+        <Input
           readOnly
           className="form-input"
           defaultValue={new Date(data.result.expiry).toLocaleString()}
         />
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="space-y-2">
         <label>Token</label>
-        <input
+        <Input
           readOnly
           name="token"
           size={data.result.token.length + 1}
@@ -88,10 +90,11 @@ export default function MainTokenContent({ tokenId }: IMainTokenContent) {
         />
       </div>
 
-      <div className="form-submit-wrap">
-        <button type="submit" className="button mx-auto`">
-          Save Changes
-        </button>
+      <div className="form-submit-wrap space-x-2">
+        <Button type="submit">Update Token</Button>
+        <Button variant="destructive" type="button">
+          Delete
+        </Button>
       </div>
     </form>
   );

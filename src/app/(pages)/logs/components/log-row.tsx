@@ -103,7 +103,7 @@ export default function LogRow({ log }: ILogRow) {
         {" "}
         [{log.level.toUpperCase()}]{" "}
       </span>
-      <span>{log.message}</span>
+      <code>{log.message}</code>
     </div>
   );
 }

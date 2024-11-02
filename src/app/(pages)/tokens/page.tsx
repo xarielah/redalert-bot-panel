@@ -1,6 +1,8 @@
 "use client";
 
 import AuthControl from "@/components/auth-control";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import TokensList from "./components/tokens-list";
 
@@ -13,7 +15,10 @@ export default function TokensPage() {
 
         <div>
           <Link href="/tokens/new">
-            <button className="button">Create New</button>
+            <Button className="group">
+              <PlusIcon className="group-hover:rotate-90 ease-in-out duration-300" />{" "}
+              Create New
+            </Button>
           </Link>
         </div>
 

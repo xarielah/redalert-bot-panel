@@ -1,4 +1,5 @@
 import { HTMLInputTypeAttribute } from "react";
+import { Input } from "./ui/input";
 
 interface IFormField {
   formik: any;
@@ -21,16 +22,15 @@ export default function FormField({
 
   return (
     <div>
-      <label className="form-label">
-        <span>
+      <label className="space-y-2">
+        <div>
           {label} {required && <span className="text-red-400">*</span>}
-        </span>
-        <input
+        </div>
+        <Input
           name={name}
           min={min}
           onChange={handleChange}
           value={values[name]}
-          className="form-input"
           placeholder={label}
           type={type || "text"}
           size={Math.max(values[name]?.length || 0, 12)}

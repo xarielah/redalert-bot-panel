@@ -19,7 +19,7 @@ export default function PendingTestings() {
   });
 
   useEffect(() => {
-    if (data) {
+    if (data?.result && Array.isArray(data.result)) {
       setAlerts(data.result);
     }
   }, [data]);

@@ -3,6 +3,7 @@
 import { MapRouteActions } from "@/app/api/map/enum";
 import ComponentLoading from "@/components/component-loading";
 import FormField from "@/components/form-field";
+import { Button } from "@/components/ui/button";
 import { MapTimingsTypes } from "@/models/map-timing-types";
 import { MapTimingsDocument } from "@/models/MapTimings";
 import { useFormik } from "formik";
@@ -85,9 +86,7 @@ export default function TimingOptions() {
         required
       />
       <div className="form-submit-wrap">
-        <button type="submit" className="button mx-auto`">
-          Save Changes
-        </button>
+        <Button type="submit">Save Changes</Button>
       </div>
     </form>
   );

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Button } from "./ui/button";
 
 type MenuItem = {
   label: string;
@@ -37,11 +38,10 @@ export default function NavMenu() {
     <menu className="flex items-center space-x-12">
       {menuItems.map((item) => (
         <Link href={item.href} key={item.label}>
-          <li
-            data-nav-active={path === item.href}
-            className="whitespace-nowrap"
-          >
-            {item.label}
+          <li data-nav-active={path === item.href}>
+            <Button variant={path === item.href ? "default" : "ghost"}>
+              {item.label}
+            </Button>
           </li>
         </Link>
       ))}

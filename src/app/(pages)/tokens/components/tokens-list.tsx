@@ -1,10 +1,20 @@
 "use client";
 
 import ComponentLoading from "@/components/component-loading";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { TokenDocument } from "@/models/Token";
+import { Trash2Icon } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import TokenRow from "./token-row";
 
 interface TokensResponse {
   result: TokenDocument[];
@@ -25,20 +35,38 @@ export default function TokensList() {
   if (isLoading) return <ComponentLoading />;
   if (!tokens || tokens.length === 0) return <p>No tokens found</p>;
   return (
-    <table className="w-full rounded-md bg-gray-50 shadow-lg">
-      <thead>
-        <tr className="text-left">
-          <th>Name</th>
-          <th>Token</th>
-          <th>Owner</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tokens.map((token) => (
-          <TokenRow key={token.id} token={token} />
-        ))}
-      </tbody>
-    </table>
+    <>
+      <Table>
+        <TableCaption>All available tokens list</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Token Name</TableHead>
+            <TableHead>Token</TableHead>
+            <TableHead>Owner</TableHead>
+            <TableHead>Created At</TableHead>
+            <TableHead>Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tokens.map((token) => (
+            <TableRow key={token.id}>
+              <TableCell>
+                <Link href={`/tokens/${token.id}`} className="hover:underline">
+                  {token.tokenName}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <code>{token.token}</code>
+              </TableCell>
+              <TableCell>{token.ownerEmail || "Not Available"}</TableCell>
+              <TableCell>{token.createdAt}</TableCell>
+              <TableCell>
+                <Trash2Icon className="w-4 h-4 text-red-600" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </>
   );
 }

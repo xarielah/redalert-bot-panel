@@ -2,14 +2,18 @@
 
 import ComponentLoading from "@/components/component-loading";
 import FormField from "@/components/form-field";
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { newTokenSchema } from "../schemas/new-token-schema";
 
 export interface NewTokenFields {
   tokenName: string;
-  expiry: string;
+  expiry: Date;
   ownerEmail: string;
 }
 
@@ -25,22 +29,28 @@ async function createNewToken(
 
 export default function CreateNewOptions() {
   const router = useRouter();
+  const [date, setDate] = useState<Date>(new Date());
   const { trigger: createNewApiToken, isMutating } = useSWRMutation(
     "/api/token",
     createNewToken
   );
+
+  useEffect(() => {
+    formik.setValues({ ...formik.values, expiry: date });
+  }, [date]);
+
   const formik = useFormik<NewTokenFields>({
     initialValues: {
       tokenName: "",
-      expiry: "",
+      expiry: new Date(),
       ownerEmail: "",
     },
     validationSchema: newTokenSchema,
     onSubmit: async (values) => {
-      console.log("🚀 ~ onSubmit: ~ values:", values);
       const data = await createNewApiToken({
         tokenName: values.tokenName.trim(),
-        expiry: new Date(values.expiry).getTime().toString(),
+        // Server expects to recieve a number
+        expiry: new Date(values.expiry).getTime() as any,
         ownerEmail: values.ownerEmail?.trim(),
       });
       if (data?.result) {
@@ -52,22 +62,17 @@ export default function CreateNewOptions() {
 
   const { handleSubmit } = formik;
 
-  const now = new Date();
-  const tomorrow = new Date(now.setDate(now.getDate() + 1));
-  const minDate = new Date(tomorrow).toISOString().slice(0, 16);
-
   if (isMutating) return <ComponentLoading />;
   return (
     <form className="form-spacing" onSubmit={handleSubmit}>
       <FormField name="tokenName" formik={formik} label="Token Name" required />
-      <FormField
-        name="expiry"
-        type="datetime-local"
-        min={minDate}
-        formik={formik}
-        label="Expiry Date"
-        required
-      />
+      <div className="w-full space-y-2 flex flex-col">
+        <label>Expiry</label>
+        <DatePicker date={date} setDate={setDate} className="w-full" />
+        {formik.errors.expiry && formik.touched.expiry && (
+          <span className="text-red-500">{formik.errors.expiry as any}</span>
+        )}
+      </div>
       <FormField
         name="ownerEmail"
         formik={formik}
@@ -75,9 +80,10 @@ export default function CreateNewOptions() {
         type="email"
       />
       <div className="form-submit-wrap">
-        <button type="submit" className="button mx-auto`">
-          Save Changes
-        </button>
+        <Button type="submit" className="group">
+          <PlusIcon className="group-hover:rotate-90 ease-in-out duration-300" />
+          Create New
+        </Button>
       </div>
     </form>
   );

@@ -1,7 +1,9 @@
+import { Card } from "@/components/ui/card";
+
 export default function NoData() {
   return (
-    <div className="text-center">
-      <span className="mx-auto text-gray-500">No last testings to display</span>
-    </div>
+    <Card className="text-center p-4">
+      <span className="mx-auto text-gray-500">No testings to display</span>
+    </Card>
   );
 }
