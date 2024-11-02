@@ -24,7 +24,7 @@ enum FilterTypes {
 }
 
 export default function LogsPage() {
-  const { logs, isPolling, isFirstLoad } = useLogPolling();
+  const { logs, isFirstLoad } = useLogPolling();
   const [filter, setFilter] = useState<string>(FilterTypes.TODAY);
   const [date, setDate] = useState<Date>(new Date());
 
@@ -70,11 +70,7 @@ export default function LogsPage() {
           )}
           <Button>Update Filters</Button>
         </div>
-        {!isPolling && (
-          <div>
-            <span>Fetching delta logs...</span>
-          </div>
-        )}
+
         {isFirstLoad ? <ComponentLoading /> : <LogTerminal logs={logs} />}
         <hr />
       </section>
