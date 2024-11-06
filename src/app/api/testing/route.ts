@@ -1,13 +1,17 @@
+import { NewTestingPayload } from "@/app/(pages)/testing/components/new-test-option";
 import { TestingDocument } from "@/models/Testing";
 import { auth } from "@clerk/nextjs/server";
 import { testingDto } from "./testing-dto";
 import {
-  createNewTestAlert,
+  CreateMultipleTests,
+  createNewTestAlerts,
   getPendingTestings,
   touchTestAlert,
 } from "./testings-repository";
-import { emitTestAlert } from "./testings-service";
+import { emitTestAlerts } from "./testings-service";
 
+// This function allow us to return the user with a value and not
+// wait for the cleanup to finish
 function cleanUpAlerts(alerts: TestingDocument[]) {
   console.log(new Date().toISOString() + " - cleaning up alerts");
   setTimeout(() => {
@@ -15,7 +19,7 @@ function cleanUpAlerts(alerts: TestingDocument[]) {
       touchTestAlert(alert.id);
     });
     console.log(new Date().toISOString() + " - DONE!! cleaning up alerts");
-  }, 2000);
+  }, 1000);
 }
 
 export async function GET(req: Request) {
@@ -47,20 +51,26 @@ export async function POST(req: Request) {
   try {
     await auth.protect();
     const body = await req.json();
-    const newTestDto: Pick<TestingDocument, "cities" | "isDrill" | "threat"> = {
-      cities: body.cities || "",
-      isDrill: body.isDrill || false,
-      threat: body.threat || 0,
-    };
+    const testsArr: NewTestingPayload[] = Array.isArray(body) ? body : [];
+    const newTestDto: CreateMultipleTests[] = testsArr.map((test) => ({
+      cities: test.cities
+        .split(",")
+        .map((city: string) => city.trim())
+        .join(","),
+      isDrill: test.isDrill,
+      threat: test.threat,
+      time: new Date().getTime(),
+      notificationId: crypto.randomUUID(),
+    }));
 
-    const testResult = await createNewTestAlert(newTestDto);
+    const testResult = await createNewTestAlerts(newTestDto);
 
     // Emit
-    await emitTestAlert(testResult);
+    await emitTestAlerts(testResult);
 
     return Response.json({
-      result: testingDto(testResult),
-      message: "New test alert created",
+      result: testResult.map((test) => testingDto(test)),
+      message: "New tests alerts created",
     });
   } catch (error: any) {
     console.log("🚀 ~ POST ~ error:", error);

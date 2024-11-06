@@ -1,60 +1,101 @@
 "use client";
-
 import { LogDocument } from "@/models/Log";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-// Custom hook for log polling
-export function useLogPolling(pollInterval = 5000) {
-  const [lastTimestamp, setLastTimestamp] = useState<number | null>(null);
-  const [logs, setLogs] = useState<LogDocument[]>([]);
+interface Cursors {
+  next: string;
+  prev: string;
+}
 
-  // Construct the URL based on whether we have a lastTimestamp
-  const getUrl = () => {
-    if (lastTimestamp === null) {
-      return "/api/logs";
-    }
-    return `/api/logs?from=${lastTimestamp}`;
-  };
-
-  const { data, error, isLoading } = useSWR<LogDocument[]>(getUrl(), fetcher, {
-    refreshInterval: pollInterval,
-    revalidateOnFocus: false, // Prevent revalidation on window focus
-    dedupingInterval: pollInterval, // Prevent duplicate requests
+export default function useLogPolling() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingPrev, setIsLoadingPrev] = useState<boolean>(false);
+  const logs = useRef<LogDocument[]>([]);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+  const isInitialized = useRef(false);
+  const [prevCursor, setPrevCursor] = useState<string>(
+    `/api/logs?prev=${Date.now()}&limit=100`
+  );
+  const cursors = useRef<Cursors>({
+    next: "",
+    prev: `/api/logs?prev=${Date.now()}&limit=100`,
   });
 
-  // Handle data updates using useEffect
-  useEffect(() => {
-    const dataLogs = (data as any)?.result || [];
-    if (dataLogs && dataLogs.length > 0) {
-      // Sort the data
-      const sortedData = [...dataLogs].sort((a, b) => a.time - b.time);
-
-      // Update logs
-      if (lastTimestamp === null) {
-        // First load - replace all logs
-        setLogs(sortedData);
-      } else {
-        // Subsequent loads - append new logs
-        const newLogs = sortedData.filter((log) => log.time > lastTimestamp);
-        setLogs((prevLogs) => [...prevLogs, ...newLogs]);
+  const loadPrevious = useCallback(async () => {
+    console.log("🚀 ~ loadPrevious ~ prevCursor:", prevCursor);
+    try {
+      if (isLoadingPrev || !prevCursor)
+        return toast.error("Cannot load any more logs.");
+      setIsLoadingPrev(true);
+      const response = await fetcher(prevCursor);
+      const tempLogs: LogDocument[] = [
+        ...(response?.result || []),
+        ...logs.current,
+      ];
+      const logIdSet = new Set<string>();
+      const newLogs = tempLogs.reduce(
+        (acc: LogDocument[], log: LogDocument) => {
+          if (!logIdSet.has(log.id)) {
+            logIdSet.add(log.id);
+            acc.push(log);
+          }
+          return acc;
+        },
+        []
+      );
+      logs.current = newLogs;
+      console.log("🚀 ~ loadPrevious ~ response?.prev:", response?.prev);
+      if (response?.prev) {
+        setPrevCursor(response.prev);
+      } else if (response.result.length > 0) {
+        setPrevCursor(`/api/logs?prev=${response.result[0].time}&limit=100`);
       }
-
-      // Update timestamp from the latest log
-      const latestTimestamp = sortedData[sortedData.length - 1]?.time;
-      if (latestTimestamp) {
-        setLastTimestamp(latestTimestamp);
-      }
+    } catch (error) {
+      console.error("Failed to fetch previous logs", error);
+    } finally {
+      setIsLoadingPrev(false);
     }
-  }, [data]);
+  }, [prevCursor]);
+
+  const initializeLogs = useCallback(async () => {
+    if (isInitialized.current) return;
+    isInitialized.current = true;
+    return fetchLogs(prevCursor);
+  }, []);
+
+  const fetchLogs = async (url: string) => {
+    try {
+      setIsLoading(true);
+      const response = await fetcher(url);
+      logs.current = [...(response?.result || []), ...logs.current];
+      cursors.current.next = response?.next || cursors.current.next;
+      setPrevCursor(response?.prev || "");
+    } catch (error) {
+      console.error("Failed to fetch logs", error);
+    } finally {
+      timer.current = setTimeout(() => {
+        fetchLogs(cursors.current.next);
+      }, 5000);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
+    };
+  }, []);
 
   return {
-    logs,
-    error,
-    isPolling: isLoading,
-    isFirstLoad: !lastTimestamp && isLoading,
-    lastTimestamp,
+    isLoading,
+    logs: logs.current,
+    initializeLogs,
+    isLoadingPrev,
+    loadPrevious,
   };
 }

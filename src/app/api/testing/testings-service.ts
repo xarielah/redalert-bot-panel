@@ -1,36 +1,19 @@
 import { TestingDocument } from "@/models/Testing";
 
-export async function emitTestAlert(data: TestingDocument) {
-  let payload = [];
-  if (Array.isArray(data)) {
-    payload = data.map((test) => ({
-      type: "ALERT",
-      data: {
-        id: test._id,
-        test: true,
-        cities: test.cities.split(",").map((city: string) => city.trim()),
-        isDrill: test.isDrill,
-        threat: test.threat,
-        notificationId: test.notificationId,
-        time: test.time,
-      },
-    }));
-  } else {
-    payload = [
-      {
-        type: "ALERT",
-        data: {
-          test: true,
-          id: data._id,
-          cities: data.cities.split(",").map((city: string) => city.trim()),
-          isDrill: data.isDrill,
-          threat: data.threat,
-          notificationId: data.notificationId,
-          time: data.time,
-        },
-      },
-    ];
-  }
+export async function emitTestAlerts(data: TestingDocument[]) {
+  let payload: any[] = Array.isArray(data) ? data : [];
+  payload = data.map((test) => ({
+    type: "ALERT",
+    data: {
+      id: test._id,
+      test: true,
+      cities: test.cities.split(",").map((city: string) => city.trim()),
+      isDrill: test.isDrill,
+      threat: test.threat,
+      notificationId: test.notificationId,
+      time: test.time,
+    },
+  }));
   const response = await fetch(process.env.TESTING_SERVICE!, {
     method: "POST",
     headers: {

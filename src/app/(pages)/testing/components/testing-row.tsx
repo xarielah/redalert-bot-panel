@@ -141,10 +141,10 @@ function DeleteAlertDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>
+          <AlertDialogCancel asChild>
             <Button variant="outline">Cancel</Button>
           </AlertDialogCancel>
-          <AlertDialogAction onClick={action}>
+          <AlertDialogAction onClick={action} asChild>
             <Button variant="destructive">Delete</Button>
           </AlertDialogAction>
         </AlertDialogFooter>

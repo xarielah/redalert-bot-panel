@@ -1,3 +1,4 @@
+import { NewTestingPayload } from "@/app/(pages)/testing/components/new-test-option";
 import dbConnect from "@/database/db-connect";
 import Testing, { TestingDocument } from "@/models/Testing";
 
@@ -35,15 +36,12 @@ export async function getLastTestings() {
   return Testing.find({ touched: true }).sort({ createdAt: -1 }).limit(5);
 }
 
-export async function createNewTestAlert(
-  payload: Pick<TestingDocument, "cities" | "isDrill" | "threat">
-) {
+export type CreateMultipleTests = Omit<NewTestingPayload, "testId"> &
+  Pick<TestingDocument, "time" | "notificationId">;
+
+export async function createNewTestAlerts(
+  payload: CreateMultipleTests[]
+): Promise<TestingDocument[]> {
   await dbConnect();
-  return Testing.create({
-    cities: payload.cities,
-    isDrill: payload.isDrill,
-    threat: payload.threat,
-    notificationId: crypto.randomUUID(),
-    time: Date.now(),
-  });
+  return Testing.insertMany(payload);
 }

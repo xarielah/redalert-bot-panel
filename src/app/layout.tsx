@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${font.className} min-h-screen`}>
+        <body className={`${font.className} min-h-screen נע-ז`}>
           <header>
             <NavigationBar />
           </header>

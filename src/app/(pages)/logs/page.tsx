@@ -1,10 +1,6 @@
 "use client";
 
-import { useLogPolling } from "@/app/(pages)/logs/use-log-polling";
 import AuthControl from "@/components/auth-control";
-import ComponentLoading from "@/components/component-loading";
-import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
 import {
   Select,
   SelectContent,
@@ -13,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
-import LogTerminal from "./components/log-terminal";
+import LogContainer from "./components/log-container";
 
 enum FilterTypes {
   TODAY = "today",
@@ -24,12 +19,6 @@ enum FilterTypes {
 }
 
 export default function LogsPage() {
-  const { logs, isFirstLoad } = useLogPolling();
-  const [filter, setFilter] = useState<string>(FilterTypes.TODAY);
-  const [date, setDate] = useState<Date>(new Date());
-
-  const handleChange = (value: string) => setFilter(value);
-
   return (
     <AuthControl>
       <section className="page-spacing">
@@ -45,7 +34,7 @@ export default function LogsPage() {
         <div className="flex items-center gap-4">
           <div>Filters:</div>
           <label>
-            <Select onValueChange={handleChange} value={filter}>
+            <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Timeframe" />
               </SelectTrigger>
@@ -65,13 +54,8 @@ export default function LogsPage() {
               </SelectContent>
             </Select>
           </label>
-          {filter === FilterTypes.CUSTOM && (
-            <DatePicker setDate={setDate} date={date} />
-          )}
-          <Button>Update Filters</Button>
         </div>
-
-        {isFirstLoad ? <ComponentLoading /> : <LogTerminal logs={logs} />}
+        <LogContainer />
         <hr />
       </section>
     </AuthControl>

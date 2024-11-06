@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface IUsePolling<T> {
   url: string;
@@ -17,26 +17,83 @@ export default function usePolling<T>({
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(true);
 
+  const abortController = useRef(new AbortController());
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  const isMounted = useRef(true);
+  const isRequestInProgress = useRef(false);
+
   useEffect(() => {
+    isMounted.current = true;
     fetchData();
-    const i = setInterval(() => {
-      fetchData();
-    }, interval);
-    return () => clearInterval(i);
+
+    return () => {
+      isMounted.current = false;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      abortController.current.abort();
+    };
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-      setData(data);
-      onSuccess && onSuccess(data);
-    } catch (error: any) {
-      setError(error);
-    } finally {
-      setLoading(false);
+  const scheduleNextFetch = () => {
+    if (isMounted.current) {
+      timeoutRef.current = setTimeout(() => {
+        fetchData();
+      }, interval);
     }
   };
 
-  return { data, error, isLoading: loading };
+  const fetchData = async () => {
+    // If a request is already in progress, don't start another one
+    if (isRequestInProgress.current) {
+      return;
+    }
+
+    // Clear any existing scheduled fetches
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    isRequestInProgress.current = true;
+
+    try {
+      // Create a new AbortController for each request
+      abortController.current = new AbortController();
+
+      const response = await fetch(url, {
+        ...options,
+        signal: abortController.current.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+
+      if (isMounted.current) {
+        setData(responseData);
+        setError(undefined);
+        onSuccess?.(responseData);
+      }
+    } catch (error: any) {
+      if (isMounted.current && !abortController.current.signal.aborted) {
+        setError(error);
+      }
+    } finally {
+      if (isMounted.current) {
+        setLoading(false);
+        isRequestInProgress.current = false;
+        // Schedule the next fetch after this one completes
+        scheduleNextFetch();
+      }
+    }
+  };
+
+  return {
+    data,
+    error,
+    isLoading: loading,
+    refetch: fetchData, // Exposing refetch function for manual polling
+  };
 }
