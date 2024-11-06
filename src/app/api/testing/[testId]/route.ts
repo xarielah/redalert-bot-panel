@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { isValidObjectId } from "mongoose";
 import { deleteTestById, getTestingById } from "../testings-repository";
-import { emitTestAlert } from "../testings-service";
+import { emitTestAlerts } from "../testings-service";
 
 // Retry alert
 export async function POST(
@@ -26,7 +26,7 @@ export async function POST(
     await alert.save();
 
     // Emit
-    await emitTestAlert(alert);
+    await emitTestAlerts([alert]);
 
     return Response.json({ message: `Alert (id:${alert._id}) was re-emitted` });
   } catch (error) {
