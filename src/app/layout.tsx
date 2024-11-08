@@ -12,9 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider dynamic>
       <html lang="en">
-        <body className={`${font.className} min-h-screen נע-ז`}>
+        <body className={`${font.className} min-h-screen`}>
           <header>
             <NavigationBar />
           </header>

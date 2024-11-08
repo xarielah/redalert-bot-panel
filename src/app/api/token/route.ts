@@ -24,7 +24,6 @@ export async function GET() {
 // Create new token
 export async function POST(req: Request) {
   try {
-    await auth.protect();
     const body = await req.json();
     return await handleTokenCreation(body);
   } catch (error) {

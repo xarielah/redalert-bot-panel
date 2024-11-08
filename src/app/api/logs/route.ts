@@ -1,5 +1,4 @@
 import { LogDocument } from "@/models/Log";
-import { auth } from "@clerk/nextjs/server";
 import { createNewLog, getDeltaLogs, getPrevLogs } from "./logs-repository";
 
 function resultDto(result: LogDocument[]) {
@@ -24,7 +23,6 @@ export interface LogsAPIResponse {
 
 export async function GET(req: Request) {
   try {
-    await auth.protect();
     const query = new URL(req.url).searchParams;
     const l = query.get("limit");
     const limit: number = l && Number.isInteger(+l) && +l > 0 ? +l : 100;

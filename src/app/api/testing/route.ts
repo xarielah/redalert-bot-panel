@@ -1,6 +1,5 @@
-import { NewTestingPayload } from "@/app/(pages)/testing/components/new-test-option";
+import { NewTestingPayload } from "@/app/(pages)/admin/testing/components/new-test-option";
 import { TestingDocument } from "@/models/Testing";
-import { auth } from "@clerk/nextjs/server";
 import { testingDto } from "./testing-dto";
 import {
   CreateMultipleTests,
@@ -49,7 +48,6 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    await auth.protect();
     const body = await req.json();
     const testsArr: NewTestingPayload[] = Array.isArray(body) ? body : [];
     const newTestDto: CreateMultipleTests[] = testsArr.map((test) => ({

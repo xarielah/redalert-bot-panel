@@ -1,5 +1,4 @@
-import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
-import RedirectClient from "./redirect-client";
+import { RedirectToSignIn, SignedOut } from "@clerk/nextjs";
 
 export default function HomePage() {
   return (
@@ -7,9 +6,6 @@ export default function HomePage() {
       <SignedOut>
         <RedirectToSignIn />
       </SignedOut>
-      <SignedIn>
-        <RedirectClient url="/logs" />
-      </SignedIn>
     </>
   );
 }

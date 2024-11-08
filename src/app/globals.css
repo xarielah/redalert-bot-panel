@@ -19,7 +19,7 @@ button[data-copied="true"] {
 }
 
 .form-input {
-  @apply py-1 px-8 shadow-md rounded-md min-w-[35ch] border-[1px] read-only:cursor-not-allowed read-only:text-gray-500;
+  @apply py-1 px-8 shadow-md rounded-md min-w-[35ch] border-[1px] read-only:cursor-not-allowed disabled:cursor-not-allowed read-only:text-gray-500 disabled:text-gray-500;
   transition: width 0.1s ease-out;
 }
 

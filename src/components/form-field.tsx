@@ -8,6 +8,8 @@ interface IFormField {
   min?: string;
   type?: HTMLInputTypeAttribute;
   required?: boolean;
+  readOnly?: boolean;
+  placeholder?: string;
 }
 
 export default function FormField({
@@ -16,7 +18,9 @@ export default function FormField({
   label,
   type,
   min,
+  readOnly = false,
   required = false,
+  placeholder = label,
 }: IFormField) {
   const { handleChange, values, touched, errors } = formik;
 
@@ -27,11 +31,12 @@ export default function FormField({
           {label} {required && <span className="text-red-400">*</span>}
         </div>
         <Input
+          readOnly={readOnly}
           name={name}
           min={min}
           onChange={handleChange}
           value={values[name]}
-          placeholder={label}
+          placeholder={placeholder}
           type={type || "text"}
           size={Math.max(values[name]?.length || 0, 12)}
         />

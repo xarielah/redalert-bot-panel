@@ -1,6 +1,26 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-export default clerkMiddleware();
+const isAdminRoute = createRouteMatcher([
+  "/admin(.*)",
+  "/api/logs(.*)",
+  "/api/config(.*)",
+  "/api/alert(.*)",
+  "/api/map(.*)",
+  "/api/testing(.*)",
+  "/api/token(.*)",
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  // Protect all routes starting with `/admin`
+  if (
+    isAdminRoute(req) &&
+    (await auth()).sessionClaims?.metadata?.role !== "admin"
+  ) {
+    const url = new URL("/", req.url);
+    return NextResponse.redirect(url);
+  }
+});
 
 export const config = {
   matcher: [

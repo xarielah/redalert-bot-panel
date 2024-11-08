@@ -1,6 +1,6 @@
 "use client";
 
-import threats from "@/app/(pages)/testing/threats.json";
+import threats from "@/app/(pages)/admin/testing/threats.json";
 import ComponentLoading from "@/components/component-loading";
 import { Button } from "@/components/ui/button";
 import {

@@ -1,4 +1,4 @@
-import { getLogById } from "@/app/(pages)/logs/logs-repository";
+import { getLogById } from "@/app/(pages)/admin/logs/logs-repository";
 import { isValidObjectId } from "mongoose";
 
 interface ILogParams {
