@@ -8,6 +8,6 @@ export function getReportStatusSchema(
   return {
     status,
     at: new Date(),
-    by: by,
+    by
   };
 }

@@ -1,4 +1,4 @@
-import { NewTestingPayload } from "@/app/(pages)/testing/components/new-test-option";
+import { NewTestingPayload } from "@/app/(pages)/admin/testing/components/new-test-option";
 import dbConnect from "@/database/db-connect";
 import Testing, { TestingDocument } from "@/models/Testing";
 
