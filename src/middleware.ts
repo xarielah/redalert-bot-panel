@@ -3,8 +3,6 @@ import { NextResponse } from "next/server";
 
 const isAdminRoute = createRouteMatcher([
   "/admin(.*)",
-  "/api/logs(.*)",
-  "/api/config(.*)",
   "/api/alert(.*)",
   "/api/map(.*)",
   "/api/testing(.*)",

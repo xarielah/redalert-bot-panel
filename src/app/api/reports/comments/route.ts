@@ -40,7 +40,6 @@ export async function POST(req: Request) {
       commenterId: user!.id,
       parent: (result.parent || undefined) as any,
     });
-    console.log("🚀 ~ POST ~ newComment:", newComment);
 
     if (!newComment)
       return Response.json(
@@ -48,7 +47,7 @@ export async function POST(req: Request) {
         { status: 500 }
       );
 
-    return Response.json({ result: commentDto(newComment) });
+    return Response.json({ result: await commentDto(newComment) });
   } catch (error: any) {
     console.log("🚀 ~ POST ~ error:", error.message);
     return Response.json({ message: "Invalid request." }, { status: 400 });

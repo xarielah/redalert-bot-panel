@@ -7,6 +7,7 @@ import { use } from "react";
 import useSWR from "swr";
 import StatusBadge from "../components/status-badge";
 import TypeBadge from "../components/type-badge";
+import { getReportUserID } from "../report-utils";
 import AddComment from "./component/add-comment";
 import CommentsContainer from "./component/comments-container";
 
@@ -45,7 +46,9 @@ export default function ReportPage({
           <StatusBadge status={report.status as ReportStatuses} />
           <TypeBadge type={report.type as ReportTypes} />
         </article>
-        <span className="text-gray-500">Reported by {report.reporter}</span>
+        <span className="text-gray-500">
+          Reported by {getReportUserID((report as any).user)}
+        </span>
       </header>
       {report.description.split("\n").map((p, i) => (
         <p key={i} className="capitalize">
