@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRef } from "react";
+import { forwardRef } from "react";
 import LogRow from "./log-row";
 
 interface ILogContainer {
@@ -11,12 +11,11 @@ interface ILogContainer {
   forbidLoadMore: boolean;
 }
 
-export default function LogContainer({ logs, onLoadMore, isLoading, forbidLoadMore }: ILogContainer) {
-  const viewRef = useRef<HTMLDivElement>(null);
+const LogContainer = forwardRef<HTMLDivElement, ILogContainer>(function LogContainer({ logs, onLoadMore, isLoading, forbidLoadMore }: ILogContainer, ref) {
   return (
     <section>
       <ScrollArea
-        ref={viewRef}
+        ref={ref}
         className="h-[700px] overflow-y-auto p-4 rounded-xl text-gray-300 font-mono bg-zinc-950"
       >
         {!forbidLoadMore &&
@@ -37,4 +36,7 @@ export default function LogContainer({ logs, onLoadMore, isLoading, forbidLoadMo
       </ScrollArea>
     </section>
   );
-}
+});
+
+
+export default LogContainer;

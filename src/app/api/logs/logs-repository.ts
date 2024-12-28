@@ -26,12 +26,17 @@ export async function getPrevLogs(
     .limit(limit);
 }
 
-export async function getLogs(cursor: string | null, limit: number = 20) {
+export async function getLogs(cursor: string | null, next: boolean = false, limit: number = 20) {
   await dbConnect();
   if (cursor) {
     const cursorRecord = await Log.findById(cursor);
     if (cursorRecord) {
-      const results = await Log.find({ createdAt: { $lt: cursorRecord.createdAt } }).sort({ createdAt: -1 }).limit(limit).exec();
+      const filterObject = next ? { createdAt: { $gt: cursorRecord.createdAt } } : { createdAt: { $lt: cursorRecord.createdAt } };
+      const results = await Log
+        .find(filterObject)
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .exec();
       return results.reverse();
     }
     else
@@ -40,4 +45,13 @@ export async function getLogs(cursor: string | null, limit: number = 20) {
     const results = await Log.find().sort({ createdAt: -1 }).limit(limit).exec();
     return results.reverse();
   }
+}
+
+export async function getLogsByDate(startDate: string, limit: number = 20) {
+  await dbConnect();
+  const results = await Log.find({ createdAt: { $lt: new Date(startDate) } })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .exec();
+  return results.reverse();
 }
