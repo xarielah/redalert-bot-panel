@@ -1,5 +1,5 @@
 import { LogDocument } from "@/models/Log";
-import { createNewLog, getDeltaLogs, getPrevLogs } from "./logs-repository";
+import { createNewLog, getLogs } from "./logs-repository";
 
 function resultDto(result: LogDocument[]) {
   if (!Array.isArray(result) || !result || result.length === 0) return [];
@@ -21,77 +21,93 @@ export interface LogsAPIResponse {
   error?: string;
 }
 
+// export async function GET(req: Request) {
+//   try {
+//     const query = new URL(req.url).searchParams;
+//     const l = query.get("limit");
+//     const limit: number = l && Number.isInteger(+l) && +l > 0 ? +l : 100;
+//     const prev = query.get("prev");
+//     // Get the last logs
+//     if (prev && Number.isInteger(+prev)) {
+//       // Get the previous logs
+//       const result = (await getPrevLogs(+prev, limit)).reverse();
+
+//       // Construct the next endpoint
+//       const prevEndpoint =
+//         result.length > 0
+//           ? "/api/logs?prev=" + result[0].time + "&limit=" + limit
+//           : undefined;
+//       const nextEndpoint =
+//         result.length > 0
+//           ? "/api/logs?next=" +
+//             result[result.length - 1].time +
+//             "&limit=" +
+//             limit
+//           : undefined;
+//       return Response.json({
+//         result: resultDto(result),
+//         count: result.length,
+//         limit: limit,
+//         prev: prevEndpoint,
+//         next: nextEndpoint,
+//       });
+//     }
+//     const next = query.get("next");
+//     if (next && Number.isInteger(+next)) {
+//       const result = (await getDeltaLogs(+next, limit)).reverse();
+
+//       // Construct the next endpoint
+//       const nextEndpoint =
+//         result.length > 0
+//           ? "/api/logs?next=" +
+//             result[result.length - 1].time +
+//             "&limit=" +
+//             limit
+//           : undefined;
+//       const prevEndpoint =
+//         result.length > 0
+//           ? "/api/logs?prev=" + result[0].time + "&limit=" + limit
+//           : undefined;
+//       return Response.json({
+//         result: resultDto(result),
+//         count: result.length,
+//       });
+//     }
+
+//     return Response.json({
+//       result: [],
+//       count: 0,
+//       limit: 0,
+//       error: "Invalid query given",
+//     });
+//   } catch (error) {
+//     console.log("🚀 ~ GET ~ error:", error);
+//     return Response.json({
+//       result: [],
+//       count: 0,
+//       limit: 0,
+//       error: "Unexpceted error while fetching logs",
+//     });
+//   }
+// }
+
 export async function GET(req: Request) {
-  try {
-    const query = new URL(req.url).searchParams;
-    const l = query.get("limit");
-    const limit: number = l && Number.isInteger(+l) && +l > 0 ? +l : 100;
-    const prev = query.get("prev");
-    // Get the last logs
-    if (prev && Number.isInteger(+prev)) {
-      // Get the previous logs
-      const result = (await getPrevLogs(+prev, limit)).reverse();
+  const searchParams = new URL(req.url).searchParams;
+  const cursor = searchParams.get("cursor");
 
-      // Construct the next endpoint
-      const prevEndpoint =
-        result.length > 0
-          ? "/api/logs?prev=" + result[0].time + "&limit=" + limit
-          : undefined;
-      const nextEndpoint =
-        result.length > 0
-          ? "/api/logs?next=" +
-            result[result.length - 1].time +
-            "&limit=" +
-            limit
-          : undefined;
-      return Response.json({
-        result: resultDto(result),
-        count: result.length,
-        limit: limit,
-        prev: prevEndpoint,
-        next: nextEndpoint,
-      });
-    }
-    const next = query.get("next");
-    if (next && Number.isInteger(+next)) {
-      const result = (await getDeltaLogs(+next, limit)).reverse();
+  const data = await getLogs(cursor);
 
-      // Construct the next endpoint
-      const nextEndpoint =
-        result.length > 0
-          ? "/api/logs?next=" +
-            result[result.length - 1].time +
-            "&limit=" +
-            limit
-          : undefined;
-      const prevEndpoint =
-        result.length > 0
-          ? "/api/logs?prev=" + result[0].time + "&limit=" + limit
-          : undefined;
-      return Response.json({
-        result: resultDto(result),
-        count: result.length,
-        limit: limit,
-        next: nextEndpoint,
-        prev: prevEndpoint,
-      });
-    }
-
+  if (!data)
     return Response.json({
       result: [],
       count: 0,
-      limit: 0,
       error: "Invalid query given",
-    });
-  } catch (error) {
-    console.log("🚀 ~ GET ~ error:", error);
-    return Response.json({
-      result: [],
-      count: 0,
-      limit: 0,
-      error: "Unexpceted error while fetching logs",
-    });
-  }
+    }, { status: 400 });
+
+  return Response.json({
+    result: resultDto(data),
+    count: data.length,
+  });
 }
 
 export async function POST(req: Request) {

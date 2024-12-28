@@ -1,61 +1,53 @@
 "use client";
 
 import AuthControl from "@/components/auth-control";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { LogDocument } from "@/models/Log";
+import { useEffect, useRef, useState } from "react";
 import LogContainer from "./components/log-container";
+import LogFilter from "./components/log-filter";
+import LogPageHeader from "./components/log-page-header";
+import { logsService } from "./logs-service";
 
-enum FilterTypes {
-  TODAY = "today",
-  THREE_DAYS = "three-days",
-  SEVEN_DAYS = "seven-days",
-  CUSTOM = "custom",
-}
+
 
 export default function LogsPage() {
+  const [cursor, setCursor] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [noMoreLogs, setNoMoreLogs] = useState<boolean>(false)
+  const logs = useRef<LogDocument[]>([])
+
+  // Initial load of logs
+  useEffect(() => {
+    loadLogs()
+  }, [])
+
+  const loadLogs = () => {
+    setIsLoading(true)
+    logsService.getLogs(cursor)
+      .then((data) => {
+        logs.current = [...data.result, ...logs.current];
+        setCursor(data.result[0].id)
+        if (data.count === 0)
+          setNoMoreLogs(true)
+      })
+      .finally(() => setIsLoading(false))
+  }
+
+  const handleLoadMore = () => {
+    loadLogs()
+  }
+
+  const handleFilterChange = (filter: string) => {
+    console.log("Filter changed: " + filter);
+  }
+
   return (
     <AuthControl>
       <section className="page-spacing">
-        <div className="space-y-2">
-          <h1 className="page-title">Logs</h1>
-          <p>
-            Bot process logs, will be showing anything related to the bot
-            process such as connecting to socket, whatsapp client, errors,
-            etc...
-          </p>
-        </div>
+        <LogPageHeader />
         <hr />
-        <div className="flex items-center gap-4">
-          <div>Filters:</div>
-          <label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Timeframe" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value={FilterTypes.TODAY}>Today</SelectItem>
-                  <SelectItem value={FilterTypes.THREE_DAYS}>
-                    Last 3 days
-                  </SelectItem>
-                  <SelectItem value={FilterTypes.SEVEN_DAYS}>
-                    Last 7 days
-                  </SelectItem>
-                  <SelectItem value={FilterTypes.CUSTOM}>
-                    Custom Date
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </label>
-        </div>
-        <LogContainer />
+        <LogFilter onFilterChange={handleFilterChange} />
+        <LogContainer logs={logs.current} forbidLoadMore={noMoreLogs} onLoadMore={handleLoadMore} isLoading={isLoading} />
         <hr />
       </section>
     </AuthControl>
